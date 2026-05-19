@@ -1,0 +1,16 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "pykiwoom",
+  "description": "Python wrapper for Kiwoom Securities (키움증권) OPEN API (REST) — Stock trading, balance, quotes, charts for Korean markets",
+  "folders": ["src", "docs", "examples"],
+  "excludeFolders": ["pydbsec", ".git", "__pycache__", "dist", "build", ".mypy_cache", ".pytest_cache"],
+  "excludeFiles": [],
+  "rules": [
+    "Always use REAL or MOCK constants for the host parameter, not raw URL strings",
+    "Use context manager (with/async with) for automatic cleanup",
+    "appkey and secretkey can be raw strings or file paths",
+    "Rate limits: REAL server = 5 req/s, MOCK server = 1 req/s — the library handles this automatically",
+    "All API responses include a .raw field for accessing the original API response data",
+    "For chart data, use ATS unified code format (e.g., '005930_AL') for stock_code"
+  ]
+}
