@@ -1,0 +1,48 @@
+site_name: pykiwoom
+site_description: Python wrapper for Kiwoom Securities OPEN API (REST)
+site_url: https://jaeminyx-stoa.github.io/pykiwoom/
+repo_url: https://github.com/Jaeminyx-Stoa/pykiwoom
+repo_name: Jaeminyx-Stoa/pykiwoom
+
+theme:
+  name: material
+  language: ko
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.copy
+    - navigation.sections
+    - navigation.expand
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference:
+      - Client: api/client.md
+      - Domestic API: api/domestic.md
+      - Models: api/models.md
+  - MCP Server: mcp.md
+  - CLI: cli.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
