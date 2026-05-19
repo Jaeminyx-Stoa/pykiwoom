@@ -2,7 +2,7 @@
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "pykiwoom",
   "description": "Python wrapper for Kiwoom Securities (키움증권) OPEN API (REST) — Stock trading, balance, quotes, charts for Korean markets",
-  "folders": ["src/pykiwoom", "docs", "examples"],
+  "folders": ["src", "docs", "examples"],
   "excludeFolders": ["pydbsec", ".git", "__pycache__", "dist", "build", ".mypy_cache", ".pytest_cache"],
   "excludeFiles": [],
   "rules": [

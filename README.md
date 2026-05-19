@@ -131,22 +131,130 @@ for block in response.content:
         result = execute_tool(block.name, block.input)
 ```
 
+## Context Manager
+
+리소스 자동 정리를 위해 `with` 문 사용을 권장합니다:
+
+```python
+from pykiwoom import PyKiwoom, REAL
+
+with PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=REAL) as client:
+    price = client.domestic.price("005930")
+    print(f"{price.stock_name}: {price.current_price:,.0f}원")
+```
+
+## Chart Data
+
+ATS 통합코드 형식(`종목코드_AL`)으로 차트를 조회합니다:
+
+```python
+from pykiwoom import PyKiwoom, REAL
+
+with PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=REAL) as client:
+    # 일봉
+    day_chart = client.domestic.chart("005930_AL", period="day", start="20250401", end="20250430")
+    for candle in day_chart.candles[:5]:
+        print(f"{candle.date}: O={candle.open} H={candle.high} L={candle.low} C={candle.close}")
+
+    # 분봉
+    min_chart = client.domestic.chart("005930_AL", period="min", start="20250501", end="20250501")
+
+    # 틱
+    tick_chart = client.domestic.chart("005930_AL", period="tick", start="20250501", end="20250501")
+```
+
+## Order Book
+
+```python
+from pykiwoom import PyKiwoom, REAL
+
+with PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=REAL) as client:
+    ob = client.domestic.order_book("005930")
+    for ask in ob.asks[:5]:
+        print(f"매도 {ask.price:,.0f}원 × {ask.volume:,}")
+    for bid in ob.bids[:5]:
+        print(f"매수 {bid.price:,.0f}원 × {bid.volume:,}")
+```
+
+## Order Management
+
+```python
+from pykiwoom import PyKiwoom, MOCK
+
+with PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=MOCK) as client:
+    # 매수
+    buy = client.domestic.buy("005930", quantity=10, price=70000)
+    print(f"주문번호: {buy.order_no}, 성공: {buy.success}")
+
+    # 매도
+    sell = client.domestic.sell("005930", quantity=5, price=72000)
+
+    # 정정
+    modify = client.domestic.modify(buy.order_no, "005930", quantity=10, price=71000)
+
+    # 취소
+    cancel = client.domestic.cancel(buy.order_no, "005930", quantity=10)
+
+    # 체결내역
+    records = client.domestic.execution_history("20250501", "20250519")
+    print(f"체결 건수: {len(records)}")
+```
+
+## Portfolio Summary
+
+```python
+from pykiwoom import PyKiwoom, REAL
+
+with PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=REAL) as client:
+    summary = client.portfolio_summary()
+    print(f"총 평가: {summary.eval_total:,.0f}원")
+    print(f"총 손익: {summary.pnl_total:,.0f}원 ({summary.pnl_rate}%)")
+```
+
+## Raw API Response
+
+모든 응답 모델은 `.raw` 필드로 원본 API 응답에 접근할 수 있습니다:
+
+```python
+from pykiwoom import PyKiwoom, REAL
+
+with PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=REAL) as client:
+    price = client.domestic.price("005930")
+    print(price.raw)  # {"stk_cd": "005930", "now_pric": "70000", ...}
+```
+
 ## API Reference
 
 ### DomesticAPI
 
 ```python
+from pykiwoom import PyKiwoom, REAL
+
+client = PyKiwoom(appkey="YOUR_KEY", secretkey="YOUR_SECRET", host=REAL)
+
+# 시세
 client.domestic.price("005930")           # 현재가
 client.domestic.order_book("005930")      # 호가
 client.domestic.stock_info("005930")      # 종목정보
 client.domestic.tickers()                 # 종목리스트
+
+# 계좌
 client.domestic.balance()                 # 잔고
 client.domestic.execution_history("20250901", "20250930")  # 체결내역
+client.domestic.orderable_quantity("005930", price=70000)   # 주문가능수량
+
+# 주문
 client.domestic.buy("005930", 10, 70000)  # 매수
 client.domestic.sell("005930", 5, 72000)  # 매도
 client.domestic.modify("12345", "005930", 10, 71000)  # 정정
 client.domestic.cancel("12345", "005930", 10)  # 취소
-client.domestic.chart("005930_AL", period="day", start="20250901", end="20250930")  # 차트
+
+# 차트
+client.domestic.chart("005930_AL", period="day", start="20250901", end="20250930")
+client.domestic.chart("005930_AL", period="min", start="20250901", end="20250901")
+client.domestic.chart("005930_AL", period="tick", start="20250901", end="20250901")
+
+client.close()
 ```
 
 ## Environment
